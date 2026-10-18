@@ -1,0 +1,786 @@
+% !TEX encoding = UTF-8 Unicode
+% ============================================================
+% TinyStar'Ex (TSE) — Pointing/guiding system build guide (English version)
+% ============================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% ------------------------------------------------------------
+% Language and encoding
+% ------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[british]{babel}
+\usepackage[autostyle]{csquotes}   % British quotation marks: 'single', "double" inside
+
+% ------------------------------------------------------------
+% Font and micro-typography
+% ------------------------------------------------------------
+%\usepackage{lmodern}. % for a book
+
+%\usepackage{tgheros}  % Helvetica style (TeX Gyre Heros)
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage[default]{sourcesanspro} % Source Sans Pro style
+
+\usepackage[sfdefault]{FiraSans} % Fira Sans
+
+\usepackage{mathastext}  % use the text font in formulas as well (otherwise Computer Modern)
+
+\usepackage{microtype}
+\emergencystretch=2em
+\usepackage{upgreek}
+
+% ------------------------------------------------------------
+% Page layout
+% ------------------------------------------------------------
+\usepackage[
+    a4paper,
+    left=2.25cm,
+    right=2.25cm,
+    top=2.0cm,
+    bottom=2.15cm
+]{geometry}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+
+\usepackage{float}
+
+% -------------------------------------------------------------
+% Avoid widows and orphans
+% -------------------------------------------------------------
+\widowpenalty=10000
+\clubpenalty=10000
+
+% ------------------------------------------------------------
+% Colours
+% ------------------------------------------------------------
+\usepackage{xcolor}
+
+\definecolor{specblue}{HTML}{2878B5}
+\definecolor{specblueDark}{HTML}{15547F}
+\definecolor{specblueLight}{HTML}{EEF6FB}
+\definecolor{specgray}{HTML}{5F6870}
+\definecolor{specgrayLight}{HTML}{F4F5F6}
+\definecolor{specline}{HTML}{D9DEE2}
+
+% ------------------------------------------------------------
+% Tables
+% ------------------------------------------------------------
+\usepackage{array}      % \newcolumntype, m{...} columns, >{...}
+\usepackage{longtable}  % tables spanning several pages
+\usepackage{booktabs}   % \toprule, \midrule, \bottomrule rules
+
+% Column types for the parts tables (defined once)
+% N: part name, Q: quantity, V: view of the part
+% m{...}: content vertically centred in the cell
+\newcolumntype{N}{>{\centering\arraybackslash}m{4.5cm}}
+\newcolumntype{Q}{>{\centering\arraybackslash}m{1.2cm}}
+% V: 5 pt of space above and below the image, to keep it clear of the rules
+\newcolumntype{V}{>{\centering\arraybackslash\vspace{5pt}}m{7cm}<{\vspace{5pt}}}
+
+% ------------------------------------------------------------
+% Figures
+% ------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{caption}
+
+\captionsetup{
+    font={small},
+    labelfont={bf,color=specgray},
+    textfont={color=specgray},
+    labelsep=period,
+    justification=centering,
+    singlelinecheck=true,
+    skip=7pt
+}
+\captionsetup[table]{position=top}
+
+% ------------------------------------------------------------
+% Headings
+% ------------------------------------------------------------
+\usepackage{titlesec}
+
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{specblueDark}}
+    {\thesection}
+    {0.65em}
+    {}
+
+\titlespacing*{\section}
+    {0pt}
+    {2.0em}
+    {1.0em}
+
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\color{specblueDark}}
+    {\thesubsection}
+    {0.55em}
+    {}
+
+\titlespacing*{\subsection}
+    {0pt}
+    {1.4em}
+    {0.45em}
+
+% ------------------------------------------------------------
+% Lists
+% ------------------------------------------------------------
+\usepackage{enumitem}
+
+\setlist[itemize]{
+    topsep=0.25em,
+    itemsep=0.35em,
+    parsep=0pt,
+    partopsep=0pt,
+    leftmargin=1.5em,
+    label=\textcolor{specblue}{\small\textbullet}
+}
+
+\setlist[enumerate]{
+    topsep=0.25em,
+    itemsep=0.35em,
+    parsep=0pt,
+    partopsep=0pt,
+    leftmargin=1.8em
+}
+
+% ------------------------------------------------------------
+% Boxes
+% ------------------------------------------------------------
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{introbox}{
+    enhanced,
+    breakable,
+    colback=specblueLight,
+    colframe=specblue,
+    boxrule=0pt,
+    leftrule=3pt,
+    arc=2pt,
+    boxsep=0pt,
+    left=12pt,
+    right=12pt,
+    top=10pt,
+    bottom=10pt,
+    before skip=0pt,
+    after skip=1.5em
+}
+
+\newtcolorbox{tipbox}{
+    enhanced,
+    breakable,
+    colback=specgrayLight,
+    colframe=specline,
+    boxrule=0.5pt,
+    arc=3pt,
+    boxsep=0pt,
+    left=11pt,
+    right=11pt,
+    top=8pt,
+    bottom=8pt,
+    before skip=0.9em,
+    after skip=1em
+}
+
+\newtcolorbox{actionbox}{
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=specblue,
+    boxrule=0.8pt,
+    arc=3pt,
+    boxsep=0pt,
+    left=11pt,
+    right=11pt,
+    top=8pt,
+    bottom=8pt,
+    before skip=0.9em,
+    after skip=1em
+}
+
+% ------------------------------------------------------------
+% Links
+% ------------------------------------------------------------
+\usepackage{xurl}
+\def\UrlBreaks{\do\/\do-}
+
+\usepackage[
+    colorlinks=true,
+    linkcolor=specblueDark,
+    citecolor=specblueDark,
+    urlcolor=specblueDark
+]{hyperref}
+
+% ------------------------------------------------------------
+% Small graphic elements
+% ------------------------------------------------------------
+\newcommand{\step}[1]{%
+    \vspace{0.25em}%
+    {\color{specblue}\sffamily\bfseries\large STEP~#1}%
+    \par\vspace{0.2em}%
+}
+
+\newcommand{\key}[1]{%
+    \textcolor{specblueDark}{\textbf{#1}}%
+}
+
+\newcommand{\specbutton}[1]{%
+    \textcolor{specblueDark}{\textbf{\enquote{#1}}}%
+}
+
+% ------------------------------------------------------------
+% Header / footer
+% ------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\footnotesize\color{specgray}TinyStar'Ex -- Guiding system build guide}
+\fancyfoot[R]{\footnotesize\color{specgray}\thepage}
+\setlength{\footskip}{1.0cm}
+
+
+% ------------------------------------------------------------
+% Title (title block typeset by hand, see \pagetitre)
+% ------------------------------------------------------------
+\title{TinyStar'Ex -- Guiding system build and assembly guide}
+\author{}       % to be completed if required
+\date{}
+
+\newcommand{\versiondoc}{1.1}   % version number of the guide
+
+\newcommand{\pagetitre}{%
+  \begin{center}
+    {\fontsize{34}{40}\selectfont\bfseries\color{specblueDark}TinyStar'Ex}\par
+    \vspace{0.7em}
+    {\huge Build and assembly guide\\[0.2em] for the pointing/guiding system}\par
+    \vspace{0.6em}
+    {\large\color{specgray}Version~\versiondoc}\par
+    \vspace{1.4em}
+    {\color{specline}\rule{0.45\textwidth}{0.6pt}}\par
+    \vspace{0.55em}
+    {\large\color{specblueDark}A STAROS project}\par
+    \vspace{0.2em}
+    {\href{https://staros-projects.org}{staros-projects.org}}\par
+    \vspace{0.45em}
+    {\color{specline}\rule{0.45\textwidth}{0.6pt}}\par
+  \end{center}
+  \vspace{1.5em}%
+}
+
+% ------------------------------------------------------------
+% Document
+% ------------------------------------------------------------
+\begin{document}
+
+\pagetitre
+
+% ##########################
+\section{Purpose}
+% ##########################
+
+This document is the build, assembly and adjustment guide for the pointing and guiding system of the \texttt{TinyStar'Ex} (TSE) spectrograph. Figure~\ref{fig:guide_global} shows the assembled system with its guiding camera, here a Player One Ceres 462M, a well-suited model. This system complements the spectrograph part of \texttt{TSE} to form a complete set-up for observing the spectra of astronomical sources.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.80]{fig_montage/guide_global.jpg}}
+}
+\caption{\footnotesize The \texttt{TinyStar'Ex} pointing and guiding system.}
+\label{fig:guide_global}
+\end{figure}
+%
+
+% ###########################
+\section{The STL files}
+% ###########################
+
+The STL files for printing the guiding-system parts are gathered in a
+compressed archive,
+\href{https://raw.githubusercontent.com/cbuil06/tse/main/stl_guide.zip}{\texttt{stl\_\allowbreak guide.zip}},
+which can be downloaded directly from the project's GitHub repository.
+
+Figure~\ref{fig:ensemble_guide} shows the parts to be printed to build the \enquote{pointing/guiding} part of the \texttt{TinyStar'Ex} project.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.78]{fig_montage/ensemble_guide2.jpg}}
+}
+\caption{All the printed parts that make up the \texttt{TinyStar'Ex} pointing and guiding system.}
+\label{fig:ensemble_guide}
+\end{figure}
+
+Section~\ref{sec:impression} gives recommendations for printing these parts.
+
+Table~\ref{tab:nomenclature_tse_guidage} is the bill of materials for the parts of the pointing/guiding system. The part names are those of the STL files.
+
+\begin{longtable}{|N|Q|V|}
+\caption{STL files of the \texttt{TinyStar'Ex} pointing/guiding system.\label{tab:nomenclature_tse_guidage}} \\
+
+\hline
+\textbf{No.} & \textbf{Qty} & \textbf{View of the part} \\
+\hline
+\endfirsthead
+
+% Header repeated on the following pages
+\multicolumn{3}{c}{\tablename\ \thetable{} -- continued from previous page} \\
+\hline
+\textbf{No.} & \textbf{Qty} & \textbf{View of the part} \\
+\hline
+\endhead
+
+% Repeated footer (except on the last page)
+\hline
+\multicolumn{3}{r}{\textit{continued on next page\ldots}} \\
+\endfoot
+
+% Footer of the last page
+\hline
+\endlastfoot
+
+% --- Data rows ---
+1G-1-cube-guidage & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/1G-1-cube-guidage.jpg} \\
+\hline
+
+2G-1-interface-guidage & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/2G-1-interface-guidage.jpg} \\
+\hline
+
+3G-1-support-miroir & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/3G-1-support-miroir.jpg} \\
+\hline
+
+4G-1-tube-lentilles & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/4G-1-tube-lentilles.jpg} \\
+\hline
+
+5G-1-bride-lentilles & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/5G-1-bague-lentilles.jpg} \\
+\hline
+
+6G-1-entretoise-lentilles & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/6G-1-entretoise-lentilles.jpg} \\
+\hline
+
+7G-1-entretoise-miroir & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/7G-1-entretoise-miroir.jpg} \\
+\hline
+
+8G-1-interface-telescope & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/8G-1-interface-telescope.jpg} \\
+\hline
+
+9G-1-coulant-50mm & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/9G-1-coulant-50mm.jpg} \\
+\hline
+
+10G-1-interface-camera (stick camera version) & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/10G-1-interface-camera.jpg} \\
+\hline
+
+11G-1-interface-camera (planetary camera version) & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/11G-1-interface-camera.jpg} \\
+\hline
+
+12G-1-simulateur-f4 & 1 &\includegraphics[width=4cm]{NOMENCLATURE_TSE/12G-1-simulateur-f4.jpg} \\
+
+\end{longtable}
+
+Information on screws, fasteners and tools is given in the document describing the assembly of the spectrograph.
+
+% ###########################
+\section{The source files}
+% ###########################
+
+As with the spectrograph, you can modify the parts of the pointing and
+guiding system. Their OpenSCAD source files,
+\href{https://raw.githubusercontent.com/cbuil06/tse/main/TSE_sources_guide.scad}{\texttt{TSE\_\allowbreak sources\_\allowbreak guide.scad}},
+can be downloaded directly from the project's GitHub repository.
+
+
+% ###########################
+\section{Printing}\label{sec:impression}
+% ###########################
+
+All the parts of the pointing and guiding system can be printed with a layer height of 0.18~mm.
+
+Five perimeters are enough. You may go up to six for part \texttt{2G-1-interface-guidage}, which supports the whole spectrograph and therefore plays an important structural role. An infill of 30\% with a gyroid pattern is entirely satisfactory. Supports for printing overhangs are needed only for parts \texttt{1G-1-cube-guidage} and \texttt{2G-1-interface-guidage} (see Figures~\ref{fig:support1} and~\ref{fig:support2}).
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.23]{fig_montage/support.jpg}}
+}
+\caption{\footnotesize Orientation of part \texttt{1G-1-cube-guidage} on the build plate, with its supports (here with the \textit{Bambu Studio} slicer and a \textit{Bambu Lab} printer). Note the use of \enquote{tree} supports, needed to print this part correctly.}
+\label{fig:support1}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.47]{fig_montage/support2.jpg}}
+}
+\caption{\footnotesize Removing the support used to print part \texttt{2G-1-interface-guidage}.}
+\label{fig:support2}
+\end{figure}
+
+% ##############################
+\section{Assembling the pointing/guiding system}
+% ##############################
+
+A number of inserts must be fitted in part \texttt{1G-1-cube-guidage}. Figures~\ref{fig:guide1}, \ref{fig:guide2} and~\ref{fig:guide3} show their type and location.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.24]{fig_montage/guide1.jpg}}
+}
+\caption{\footnotesize Inserts in part \texttt{1G-1-cube-guidage}: four M3 S (short) inserts.}
+\label{fig:guide1}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.24]{fig_montage/guide2.jpg}}
+}
+\caption{\footnotesize Inserts in part \texttt{1G-1-cube-guidage}: three M3 inserts.}
+\label{fig:guide2}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.18]{fig_montage/guide3.jpg}}
+}
+\caption{\footnotesize Insert in part \texttt{1G-1-cube-guidage}: one M4 S (short) insert.}
+\label{fig:guide3}
+\end{figure}
+%
+While you are fitting inserts, you can also deal with those for the parts shown in Figures~\ref{fig:guide4}, \ref{fig:guide5} and~\ref{fig:guide30}.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.40]{fig_montage/guide4.jpg}}
+}
+\caption{\footnotesize Inserts in part \texttt{2G-1-interface-guidage}: five M4 S (short) inserts.}
+\label{fig:guide4}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.22]{fig_montage/guide5.jpg}}
+}
+\caption{\footnotesize Inserts in part \texttt{8G-1-interface-telescope}: two M4 inserts.}
+\label{fig:guide5}
+\end{figure}
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.62]{fig_montage/guide30.jpg}}
+}
+\caption{\footnotesize Inserts in part \texttt{10G-1-interface-camera}: two M3 inserts.}
+\label{fig:guide30}
+\end{figure}
+%
+First of all, check that the guiding system interface fits properly over the collimator tube (Figure~\ref{fig:guide19}, left). The two parts must slide into each other without forcing. If they do not, the slit holder is probably not coaxial with the collimator tube (also look out for printing burrs, which are easy to remove by rubbing with abrasive cloth). Slightly loosen the three M2 screws holding the slit holder (Figure~\ref{fig:guide19}, right), then refit the guiding interface, pushing it fully home (yellow arrow in the left-hand view). With the interface still in place, retighten the three M2 screws of the slit holder. You can then remove the interface.
+
+This operation is also an opportunity to see how some add-on parts are fixed: by clamping onto cylindrical bearing surfaces. This technique gives a firm hold without screws marking the printed parts. It also leaves great freedom for fitting accessories: the 40~mm diameter of the collimator tube (39.75~mm, to be precise) is a kind of \enquote{standard} specific to \texttt{TSE}, onto which extensions are easily grafted.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.60]{fig_montage/guide19.jpg}}
+}
+\caption{Checking that the collimator tube and the guiding system interface are coaxial. The two parts must meet at the yellow arrow.}
+\label{fig:guide19}
+\end{figure}
+%
+Next, fit the two doublets, 12.5~mm in diameter with a focal length of 50~mm, in the bore of part \texttt{4G-1-tube-lentilles} (Figure~\ref{fig:guide8}). They act as relay lenses, transferring the image of the slit to the detector plane of the pointing/guiding camera.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.24]{fig_montage/guide8.jpg}}
+}
+\caption{\footnotesize The components of the guiding optics sub-assembly: two lenses facing each other, the sleeve \texttt{4G-1-tube-lentilles}, part \texttt{6G-1-entretoise-lentilles} and the retaining part \texttt{5G-1-bride-lentilles}.}
+\label{fig:guide8}
+\end{figure}
+%
+The lenses are fitted head to tail in their seat. It is essential to fit them the right way round: if you look carefully at them edge-on, you will see that one face is more curved than the other. The assembly must follow the orientations given in Figure~\ref{fig:guide9} to obtain a good image in the guiding camera.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.50]{fig_montage/guide9.jpg}}
+}
+\caption{\footnotesize Assembly diagram of the guiding system lenses.}
+\label{fig:guide9}
+\end{figure}
+%
+The lenses and the spacer should slide into their seat without difficulty. Insert the first lens (watch its orientation), then the spacer, then the second lens (again, watch the orientation). It is normal for the surface of the last lens to protrude from the tube, as shown in Figure~\ref{fig:guide10}.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.25]{fig_montage/guide10.jpg}}
+}
+\caption{\footnotesize The lenses in their seat. The outer face of the last lens must protrude slightly from the tube.}
+\label{fig:guide10}
+\end{figure}
+%
+The tube fitted with the lenses is then mounted in its seat in the guiding cube (Figure~\ref{fig:guide11}).
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.25]{fig_montage/guide11.jpg}}
+}
+\caption{\footnotesize The lens tube in place in part \texttt{1G-1-cube-guidage}.}
+\label{fig:guide11}
+\end{figure}
+%
+Next, fit part \texttt{5G-1-bride-lentilles}, held by three M3 screws 8~mm long (Figure~\ref{fig:guide12}). Tighten moderately, sharing the effort evenly between the three screws.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.22]{fig_montage/guide12.jpg}}
+}
+\caption{\footnotesize The lenses fixed in their seat. Take care to orient part \texttt{5G-1-bride-lentilles} so that its bore faces the lenses.}
+\label{fig:guide12}
+\end{figure}
+%
+A $15 \times 15 \times 3$~mm mirror sends to the guiding camera the image of the star field reflected by the outer parts of the slit, after the light has passed through the two lenses assembled previously.
+
+This mirror is glued into part \texttt{3G-1-support-miroir}, a shoe inclined at 30$^\circ$ (see Figure~\ref{fig:guide16}).
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.42pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.55]{fig_montage/guide16.jpg}}
+}
+\caption{\footnotesize Assembling the fold mirror of the guiding system. An inexpensive, fairly fast-setting glue is used here. Apply very little glue to the areas on which the mirror rests (use a small stick or similar). Bring the mirror into position, pressed firmly against its stops, then press with a clean cotton bud for one minute. Leave the part to rest for a good hour before handling it.}
+\label{fig:guide16}
+\end{figure}
+%
+Fix the fold mirror holder in the structure of the guiding block (Figure~\ref{fig:guide20}).
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.44pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.45]{fig_montage/guide20.jpg}}
+}
+\caption{\footnotesize Fixing the flat fold mirror holder with four M3 $\times$ 10~mm screws. Do not fit it the wrong way round: refer to these photographs.}
+\label{fig:guide20}
+\end{figure}
+%
+
+
+Next, fit the guiding camera interface. There are two options: a simple 3D-printed tube, part \texttt{10G-1-interface-camera}, or a more elaborate device, a helical focuser, here made by ZWO (Figure~\ref{fig:guide31}). We recommend the first option: it is the cheaper, and despite its apparent simplicity, it offers the best stability, both over time and whatever the region of sky at which the telescope is pointed.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.44pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.38]{fig_montage/guide31.jpg}}
+}
+\caption{The two possible solutions for fitting the pointing and guiding camera.}
+\label{fig:guide31}
+\end{figure}
+%
+Note also that the printed tube can take either a \enquote{stick} camera or a \enquote{planetary} camera (Figure~\ref{fig:guide32}), which the bulk of a helical focuser does not allow.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.44pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.40]{fig_montage/guide32.jpg}}
+}
+\caption{The pointing and guiding system is designed to accept both main families of camera. Only the length of the interface tube changes: the two configurations shown here differ by 38~mm, hence the two versions of the part, \texttt{10G-1-interface-camera} and \texttt{11G-1-interface-camera}.}
+\label{fig:guide32}
+\end{figure}
+
+In all cases, the interface is held by clamping: an M4 $\times$ 20~mm screw closes the slot of the collar to give a secure hold (Figure~\ref{fig:guide21}).
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.44pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.50]{fig_montage/guide21.jpg}}
+}
+\caption{Fixing the camera interface, here a ZWO helical focuser.}
+\label{fig:guide21}
+\end{figure}
+
+A suggestion: fit the guiding camera with a filter that blocks the infrared (an \enquote{IR-cut} filter, Figure~\ref{fig:guide23}). The detector is sensitive to infrared, but the lenses used perform only moderately well there, in particular because of chromatic aberration. If you observe from a town, this is also an opportunity to use a light-pollution filter: by increasing the contrast against the bright sky background, it will make faint objects easier to point at.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.25]{fig_montage/guide23.jpg}}
+}
+\caption{Guiding camera fitted with a UV and IR blocking filter (\enquote{UV/IR-cut}).}
+\label{fig:guide23}
+\end{figure}
+
+Parts \texttt{1G-1-cube-guidage}, \texttt{2G-1-interface-guidage} and \texttt{8G-1-interface-telescope} are assembled with four M4 through-screws 70~mm long, as shown in Figure~\ref{fig:guide33}.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.44pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.42]{fig_montage/guide33.jpg}}
+}
+\caption{Assembling the guiding interface and the telescope interface on the guiding cube.}
+\label{fig:guide33}
+\end{figure}
+
+For greater rigidity, it is advisable to attach the spectrograph to the telescope with a 50~mm barrel. You can use the printed barrel, part \texttt{9G-1-coulant-50mm}, or a metal barrel combined with a male/female T2 ring 45~mm in diameter and 15~mm long (Figure~\ref{fig:guide34}).
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.46]{fig_montage/guide34.jpg}}
+}
+\caption{Fitting a 50~mm barrel to attach the spectrograph to the telescope. On the left, part \texttt{9G-1-coulant-50mm} provides this connection: a simple, effective and inexpensive solution.}
+\label{fig:guide34}
+\end{figure}
+
+Finally, the guiding system is coupled to the spectrograph through the 40~mm diameter interface (Figure~\ref{fig:guide35}).
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.76]{fig_montage/guide35.jpg}}
+}
+\caption{The spectrograph about to receive its pointing and guiding system.}
+\label{fig:guide35}
+\end{figure}
+
+Push the guiding system fully home in the direction of the arrow shown in Figure~\ref{fig:guide25}. Then rotate it about the 40~mm interface, which allows this degree of freedom, so that the guiding housing lies in the same plane as the spectrograph; judging by eye is enough. Then firmly tighten the M4 $\times$ 20~mm screw of the spectrograph/guiding system interface.
+%
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.62]{fig_montage/guide25.jpg}}
+}
+\caption{The TinyStar'Ex spectrograph fitted with its pointing and guiding system. Firmly tighten the M4 $\times$ 20~mm screw with an Allen key.}
+\label{fig:guide25}
+\end{figure}
+
+% ##########################
+\section{Adjustment}
+% ##########################
+
+The only adjustment required is to orient the image of the slit correctly relative to the rows (or columns) of the guiding camera, and then to focus on this image.
+
+A first piece of advice: if you use a telescope of less than 200~mm in diameter, work with the 14~$\upmu$m slit of the GEN2 system (see the spectrograph assembly guide). From 200~mm up to 300~mm, select the 20~$\upmu$m slit. For larger apertures, use the 26~$\upmu$m slit. There is no absolute rule; these are only guidelines: the actual choice depends on the turbulence (\textit{seeing}) at the observing site, the optical quality of your telescope, the accuracy of the tracking and the type of observing programme (depending on whether you favour spectral resolution or radiometric resolution, that is, signal-to-noise ratio). A refractor may be suitable, but a reflecting telescope, even of modest diameter, is always recommended in spectroscopy, as it is free of chromatic aberration.
+
+A second piece of advice: for optimum adjustment when working on the bench (that is, without a telescope), feed the spectrograph with a beam whose geometry is roughly the same as it will have once the spectrograph is coupled to the telescope. What matters here is the opening angle of this beam, or focal ratio $F/D$. Optical aberrations will then be much better taken into account, and you will get a more accurate diagnosis of the state of your instrument.
+
+Part \texttt{12G-1-simulateur-f4} is a simple diaphragm that fits on the front of the printed barrel \texttt{9G-1-coulant-50mm} and simulates the use of an $f/4$ telescope (Figure~\ref{fig:guide36}). The aperture is set by changing the diameter $d$ of the diaphragm. If $F/D$ is the focal ratio you wish to simulate, print a part whose diaphragm has a diameter, in millimetres, of $d = 86 / (F/D)$, where 86~mm is the distance between the plane of the diaphragm and the slit.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.70]{fig_montage/guide36.jpg}}
+}
+\caption{Fitting the entrance diaphragm to simulate a telescope of a given focal ratio. For an even better result, fix a sheet of tracing paper over the aperture to diffuse the light better. This accessory is useful for all adjustments, including those of the spectrograph itself (see the spectrograph assembly guide).}
+\label{fig:guide36}
+\end{figure}
+
+The aim is an image of the slit similar to that in Figure~\ref{fig:guide26}: the image is sharp, at least in its central part, the slit is horizontal and the image is centred vertically.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.38]{fig_montage/guide26.jpg}}
+}
+\caption{Image of the slit as seen by the guiding system.}
+\label{fig:guide26}
+\end{figure}
+
+For this adjustment, point the spectrograph at a lit ceiling, fitted if possible with its entrance diaphragm. If you intend to use a filter on the camera, fit it now. Display the camera image in \enquote{live view} mode and adjust the exposure time so as not to saturate the image.
+
+The illustrations in Figure~\ref{fig:guide37} show how to proceed. Push the interface tube fully home in its seat, find the best focus by moving the camera forwards or backwards, then tighten the camera retaining screws. Next, orient the interface tube, and finally tighten the clamp of the guiding block.
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.50]{fig_montage/guide37.jpg}}
+}
+\caption{The operations required to adjust the image of the slit.}
+\label{fig:guide37}
+\end{figure}
+
+Work with a light touch, adjusting the tightness of the screws so that the parts can move without excessive play. After a few attempts and a little patience, you will achieve the precision of a helical focuser, with excellent stability into the bargain.
+
+This adjustment should not normally need to be repeated. Bear in mind that your performance at the telescope will depend greatly on it. Enlarge the image of the slit on the screen and aim for really sharp edges. A slit oriented to within two or three tenths of a degree of the detector rows also makes observing much more comfortable. So take the time needed: a great deal depends on it.
+
+If the image of the slit does not seem well enough centred vertically (a small offset is of no consequence), remove the mirror holder (\texttt{3G-1-support-miroir}) and add the shim \texttt{7G-1-entretoise-miroir} before refitting it. You will then need to refocus on the slit.
+
+TinyStar'Ex is now assembled and adjusted. Clear skies!
+
+\begin{figure}[H]
+\centering
+{
+\setlength{\fboxrule}{0.35pt}
+\setlength{\fboxsep}{1pt}
+\fbox{\includegraphics[scale=0.76]{fig_montage/guide38.jpg}}
+}
+\caption{The complete \texttt{TinyStar'Ex} spectrograph, ready for use on the sky.}
+\label{fig:guide38}
+\end{figure}
+
+\end{document}
