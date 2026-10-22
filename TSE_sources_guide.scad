@@ -2,8 +2,8 @@
 // Projet TinyStar'Ex (TSE) / TinyStar'Ex (TSE) project
 // Système guide / Guiding system
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
-// Christian Buil - STAROS Projects
-// Version 1.0
+// Auteur / Author : Christian Buil - STAROS Projects
+// Version 1.1
 // =====================================================================
 
 
@@ -235,8 +235,8 @@ module support_miroir(
 
 module tube_lentilles()
 {
-    d1 = 17.1;   // Ø extérieur / Outer Ø
-    d2 = 12.95;  // Ø logement des lentilles / Lens bore Ø
+    d1 = 17.0;   // Ø extérieur / Outer Ø
+    d2 = 12.85;  // Ø logement des lentilles / Lens bore Ø
     d3 = 11.0;   // Ø passage dans l'épaulement / Shoulder hole Ø
                        
     difference()
@@ -401,8 +401,8 @@ module interface_camera(
     rallonge          = 0,     // Longueur ajoutée au tube (0 = planétaire, 34 = guide)
                                // Extra tube length (0 = planetary, 34 = guide)
     hauteur_base      = 21,    // Hauteur du tube court / Short tube height
-    diametre_ext      = 46.15, // Diamètre extérieur / Outer diameter
-    diametre_coulant  = 31.75, // Diamètre du coulant caméra (1.25")
+    diametre_ext      = 46.18, // Diamètre extérieur / Outer diameter
+    diametre_coulant  = 31.77, // Diamètre du coulant caméra (1.25")
                                // Camera barrel diameter (1.25")
     jeu               = 0.12,  // Jeu ajouté à l'alésage (à ajuster selon l'imprimante)
                                // Clearance added to the bore (tune for your printer)

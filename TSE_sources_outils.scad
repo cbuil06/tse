@@ -2,8 +2,8 @@
 // Projet TinyStar'Ex (TSE) / TinyStar'Ex (TSE) project
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
-// Christian Buil - STAROS Projects
-// Version 1.0
+// Auteur / Author : Christian Buil - STAROS Projects
+// Version 1.1
 // =====================================================================
 
 

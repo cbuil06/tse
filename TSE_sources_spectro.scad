@@ -2,8 +2,8 @@
 // Projet TinyStar'Ex (TSE) / TinyStar'Ex (TSE) project
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
-// Christian Buil - STAROS Projects
-// Version 1.0
+// Auteur / Author : Christian Buil - STAROS Projects
+// Version 1.1
 // =====================================================================
 
 
@@ -160,13 +160,13 @@ module capot_inferieur()
            
             // Logement du tube collimateur / Collimator tube seat
             translate([-98.7, 0, 30]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 39.78);      
+                cylinder(h = 40, d = 39.73);      
             translate([-80, 0, 30]) rotate([0, 90, 0])
                 cylinder(h = 45, d = 36);         
                 
             // Logement du coulant caméra 31.75 / Camera 31.75 barrel seat 
             rotate([0, 0, 40]) translate([-85.9, 0, 30]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 31.75 - 0.03);  
+                cylinder(h = 40, d = 31.72);  
                 
             // Détourage de la trappe réseau / Grating hatch cut-out
             difference()
@@ -210,7 +210,7 @@ module capot_inferieur()
            
             // Vis Kodak (1/4") / Kodak screw (1/4")
             translate([-40, 32.2, 9]) rotate([90, 0, 0])
-                cylinder(h = 10.1, d = 8.5);
+                cylinder(h = 10.1, d = 8.3);
 
             // Trappe de mise au point / Focus hatch
             translate([-8.15, -48, 18.51]) rotate([0, 0, -140]) translate([0, -20, 0])
@@ -293,7 +293,7 @@ module capot_superieur()
             // Collimator tube seat
             // ---------------------------------------------------------
             translate([-98.7, 0, 0]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 39.78);      // Ø tube 40 - 0.22
+                cylinder(h = 40, d = 39.72);      // Ø tube 40 - 0.22
             translate([-80, 0, 0]) rotate([0, 90, 0])
                 cylinder(h = 45, d = 36);
 
@@ -302,7 +302,7 @@ module capot_superieur()
             // Camera 31.75 barrel seat
             // ---------------------------------------------------------
             rotate([0, 0, 40]) translate([-85.9, 0, 0]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 31.75 - 0.05);
+                cylinder(h = 40, d = 31.72);
 
             // ---------------------------------------------------------
             // Fixation du capot : 5 vis M4
@@ -323,7 +323,7 @@ module capot_superieur()
             translate([-25.1, 20, 21])
                 cylinder(h = 9 + e, d = 8.4);
             translate([-40, 32.2, 21]) rotate([90, 0, 0])
-                cylinder(h = 10.1, d = 8.5);
+                cylinder(h = 10.1, d = 8.4);
 
             // ---------------------------------------------------------
             // Trappe de mise au point
@@ -867,8 +867,8 @@ module interface_reseau()
         // Ø3.3 through holes + Ø5.8 counterbores
         for (p = [[-21.7, 0], [41.8, -11], [41.8, 11]])
         {
-            translate([p[0], p[1], -epsilon]) cylinder(h = 20, d = 3.3);
-            translate([p[0], p[1], -epsilon]) cylinder(h = 4.1 + epsilon, d = 5.8);
+            translate([p[0], p[1], -epsilon]) cylinder(h = 20, d = 3.4);
+            translate([p[0], p[1], -epsilon]) cylinder(h = 4.1 + epsilon, d = 5.9);
         }
 
         // Trou d'outillage M4 Ø5.85 / M4 tooling hole Ø5.85
