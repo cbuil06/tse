@@ -863,8 +863,8 @@ module interface_reseau()
         coupe_coin([[-26.683, 2.152], [-10.452, 15.771], [-27.3, 16.45]],
                    -epsilon, 10.2 + 2 * epsilon);
 
-        // Trous Ø3.3 traversants + lamages Ø5.8
-        // Ø3.3 through holes + Ø5.8 counterbores
+        // Trous Ø3.4 traversants + lamages Ø5.9
+        // Ø3.4 through holes + Ø5.9 counterbores
         for (p = [[-21.7, 0], [41.8, -11], [41.8, 11]])
         {
             translate([p[0], p[1], -epsilon]) cylinder(h = 20, d = 3.4);
@@ -1064,7 +1064,6 @@ module trappe_focus()
     }
 }
 
-
 // =====================================================================
 // AFFICHAGE / DISPLAY
 // =====================================================================
@@ -1077,8 +1076,8 @@ module trappe_focus()
 // porte_reseau_127();
 // porte_reseau_250();
 // bride_reseau();
-// interface_reseau();
-// support_fente();
+ interface_reseau();
+// rotate([0,0,-90]) support_fente();
 // bride_fente();
 // trappe_focus();
 
