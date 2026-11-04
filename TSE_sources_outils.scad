@@ -3,7 +3,7 @@
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
 // Auteur / Author : Christian Buil - STAROS Projects
-// Version 1.1
+// Version 1.2 - Nov. 4, 2026
 // =====================================================================
 
 
@@ -78,8 +78,114 @@ module manette_reglage()
     }
 }
 
+
+// =====================================================================
+// BOÎTE DE PROTECTION DE L'INTERFACE RÉSEAU
+// GRATING INTERFACE PROTECTION BOX 
+// Pièce / Part : 3A-boite-reseau-interface
+// =====================================================================
+
+// hauteur : hauteur totale de la boîte, plancher compris (mm)
+//           46.0 pour un réseau de 12.5 mm de côté
+//           52.5   pour un réseau de 25.0 mm de côté
+// hauteur : total box height, floor included (mm)
+//           46.0 for a 12.5 mm square grating
+//           52.5   for a 25.0 mm square grating
+module boite_reseau_interface(hauteur = 52.5)
+{
+    e = 0.01;   // petit débord pour des soustractions propres
+                // small overlap for clean subtractions
+    
+    difference()
+    {
+        linear_extrude(height = hauteur)
+            polygon([[-10.5,   18], [46.1,  18], [46.1, -18],
+                     [-12.347, -18], [-26.3, -6.292], [-26.3, 10.633]]);
+        translate([0, 0, 2.5])
+            linear_extrude(height = hauteur - 2.5 + e)
+                polygon([[ -9.645,  14.15], [38,  14.15], [38, -14.15],
+                         [-10.946, -14.15], [-18, 0.977], [-18, 10.254]]);
+        for (p = [[-21.7, 0], [41.8, -11], [41.8, 11]])
+            translate([p[0], p[1], hauteur - 8.5])
+                cylinder(h = 8.5 + e, d = 4.2);
+    }
+}
+
+// =====================================================================
+// BOÎTE RÉSEAU SIMPLE / SIMPLE GRATING BOX
+// Pièce / Part : 4A-boite-reseau-simple
+// =====================================================================
+// Boîte pour réseau de 12.5 mm ou de 25.0 mm de côté, fermée par le
+// couvercle (pièce 5A-boite-reseau-couvercle).
+// Box for a 12.5 mm or 25.0 mm square grating, closed by the lid
+// (part 5A-boite-reseau-couvercle).
+// =====================================================================
+
+// hauteur : hauteur totale de la boîte, plancher compris (mm)
+//           38.0   pour un réseau de 12.5 mm de côté
+//           44.5   pour un réseau de 25.0 mm de côté
+// hauteur : total box height, floor included (mm)
+//           38.0   for a 12.5 mm square grating
+//           44.5   for a 25.0 mm square grating
+module boite_reseau_simple(hauteur = 38.0)
+{
+    e = 0.01;   // petit débord pour des soustractions propres
+                // small overlap for clean subtractions
+
+    // Centres des 4 colonnettes de fixation du couvercle
+    // Centres of the 4 lid fastening pillars
+    colonnettes = [[28.9, 13.8], [-28.9, 13.8], [28.9, -13.8], [-28.9, -13.8]];
+
+    difference()
+    {
+        union()
+        {
+            difference()
+            {
+                translate([-32.5, -19, 0])
+                    cube([65, 38, hauteur]);
+                translate([-29.5, -16, 3])
+                    cube([59, 32, hauteur - 3 + e]);
+            }
+            for (p = colonnettes)
+                translate([p[0], p[1], 0])
+                    cylinder(h = hauteur, d = 7.2);
+        }
+
+        translate([19, 0, -e])
+            cylinder(h = 3 + 2 * e, d = 4.7);
+
+        for (p = colonnettes)
+            translate([p[0], p[1], hauteur - 9])
+                cylinder(h = 9 + e, d = 4.2);
+    }
+}
+
+// =====================================================================
+// COUVERCLE DE LA BOÎTE RÉSEAU / GRATING BOX LID
+// Pièce / Part : 5A-boite-reseau-couvercle
+// =====================================================================
+
+module boite_reseau_couvercle()
+{
+    e = 0.01;   // petit débord pour des soustractions propres
+                // small overlap for clean subtractions
+
+    difference()
+    {
+        translate([-32.5, -19, 0])
+            cube([65, 38, 3]);
+        for (p = [[28.9, 13.8], [-28.9, 13.8], [28.9, -13.8], [-28.9, -13.8]])
+            translate([p[0], p[1], -e])
+                cylinder(h = 3 + 2 * e, d = 4.4);
+    }
+}
+
 // =====================================================================
 // AFFICHAGE / DISPLAY
 // =====================================================================
 // fourche_reglage();
 // manette_reglage();
+boite_reseau_interface();
+// boite_reseau_simple();
+// boite_reseau_couvercle();

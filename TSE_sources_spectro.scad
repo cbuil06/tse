@@ -3,7 +3,7 @@
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
 // Auteur / Author : Christian Buil - STAROS Projects
-// Version 1.1
+// Version 1.2 - Nov. 4, 2026
 // =====================================================================
 
 
@@ -194,13 +194,15 @@ module capot_inferieur()
             
             // Inserts M4 Ø5.8 des tubes, traversants,  M4 inserts Ø5.8 for the tubes, through
             // Tube objectif, sur l'axe objectif / Objective tube, on objective axis
-            for (x = [-62, -74.5])
+            for (x = [-63.5, -74.5])
                 rotate([0, 0, 40]) translate([x, 0, -e])
                     cylinder(h = 35, d = 5.8);
+ 
             // Tube collimateur, sur l'axe X / Collimator tube, on X axis
             for (x = [-64, -82])
                 translate([x, 0, -e])
                     cylinder(h = 35, d = 5.8);
+            
             
             // Fixation du capot : 5 perçages traversants Ø4.6    
             // Cover fastening: 5 through holes Ø4.6
@@ -864,11 +866,11 @@ module interface_reseau()
                    -epsilon, 10.2 + 2 * epsilon);
 
         // Trous Ø3.4 traversants + lamages Ø5.9
-        // Ø3.4 through holes + Ø5.9 counterbores
+        // Ø3.5 through holes + Ø6.0 counterbores
         for (p = [[-21.7, 0], [41.8, -11], [41.8, 11]])
         {
-            translate([p[0], p[1], -epsilon]) cylinder(h = 20, d = 3.4);
-            translate([p[0], p[1], -epsilon]) cylinder(h = 4.1 + epsilon, d = 5.9);
+            translate([p[0], p[1], -epsilon]) cylinder(h = 20, d = 3.5);
+            translate([p[0], p[1], -epsilon]) cylinder(h = 4.1 + epsilon, d = 6.0);
         }
 
         // Trou d'outillage M4 Ø5.85 / M4 tooling hole Ø5.85
@@ -1076,7 +1078,7 @@ module trappe_focus()
 // porte_reseau_127();
 // porte_reseau_250();
 // bride_reseau();
- interface_reseau();
+// interface_reseau();
 // rotate([0,0,-90]) support_fente();
 // bride_fente();
 // trappe_focus();
