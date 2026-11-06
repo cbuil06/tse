@@ -3,7 +3,7 @@
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
 // Auteur / Author : Christian Buil - STAROS Projects
-// Version 1.2 - Nov. 4, 2026
+// Version 1.3 - Nov. 6, 2026
 // =====================================================================
 
 
@@ -160,7 +160,7 @@ module capot_inferieur()
            
             // Logement du tube collimateur / Collimator tube seat
             translate([-98.7, 0, 30]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 39.73);      
+                cylinder(h = 40, d = 39.58);      
             translate([-80, 0, 30]) rotate([0, 90, 0])
                 cylinder(h = 45, d = 36);         
                 
@@ -295,7 +295,7 @@ module capot_superieur()
             // Collimator tube seat
             // ---------------------------------------------------------
             translate([-98.7, 0, 0]) rotate([0, 90, 0])
-                cylinder(h = 40, d = 39.72);      // Ø tube 40 - 0.22
+                cylinder(h = 40, d = 39.58);
             translate([-80, 0, 0]) rotate([0, 90, 0])
                 cylinder(h = 45, d = 36);
 
@@ -722,7 +722,7 @@ module porte_reseau_250()
     //     600 traits/mm VIS  :  -7.0       2400 traits/mm UV  : -25.6
     //     600 traits/mm IR   : -10.7
     //   (traits/mm = lines/mm)
-    angle_bras = 0;
+    angle_bras = -52.8;
 
     difference()
     {
@@ -1082,8 +1082,6 @@ module trappe_focus()
 // rotate([0,0,-90]) support_fente();
 // bride_fente();
 // trappe_focus();
-
-
 
 
 
