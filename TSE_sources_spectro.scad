@@ -102,7 +102,7 @@ module filetage_iso(diametre, pas, longueur, chanfrein_bas = 0, chanfrein_haut =
 
 
 // ----- Rayon des arêtes verticales extérieures / Radius of the outer vertical edges -----
-rayon_arete = 1.5;
+rayon_arete = 3.0;
 
 // Utilitaire CAPOT / COVER Utility
 // Contour extérieur en 2D, identique au bloc de base recoupé par les deux pans,
