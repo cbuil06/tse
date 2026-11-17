@@ -3,7 +3,7 @@
 // Spectrographe / Spectrograph
 // Sources OpenSCAD des fichiers STL / OpenSCAD sources of the STL files
 // Auteur / Author : Christian Buil - STAROS Projects
-// Version 1.3 - Nov. 6, 2026
+// Version 1.4 - Nov. 17, 2026
 // =====================================================================
 
 
@@ -100,9 +100,31 @@ module filetage_iso(diametre, pas, longueur, chanfrein_bas = 0, chanfrein_haut =
     polyhedron(points = points, faces = faces, convexity = 4);
 }                   
 
+
+// ----- Rayon des arêtes verticales extérieures / Radius of the outer vertical edges -----
+rayon_arete = 1.5;
+
+// Utilitaire CAPOT / COVER Utility
+// Contour extérieur en 2D, identique au bloc de base recoupé par les deux pans,
+// avec les angles convexes arrondis au rayon voulu
+// 2D outer outline, same as the base block trimmed by the two faces,
+// with the convex corners rounded to the chosen radius
+module contour_exterieur_arrondi()
+{
+    offset(delta = 0.01) offset(r = rayon_arete) offset(delta = -rayon_arete)
+        difference()
+        {
+            translate([-88, -73]) square([115, 105]);
+            // Pan parallèle à l'axe objectif / Face parallel to the objective axis
+            rotate(40) translate([-80.9, -86.9]) square([120, 60]);
+            // Pan perpendiculaire à l'axe objectif / Face perpendicular to the objective axis
+            rotate(40) translate([-120.9, -30]) square([40, 80]);
+        }
+}
+
 // =====================================================================
 // CAPOT INFÉRIEUR / BOTTOM COVER
-// Pièce / Part : 1-1-capot-inferieur
+// Pièce / Part : 1-2-capot-inferieur
 // =====================================================================
 
 module capot_inferieur()
@@ -116,39 +138,52 @@ module capot_inferieur()
     {
         difference()
         {
-            union()
+            // Bloc extérieur recoupé par le contour arrondi (arêtes verticales R1)
+            // Outer block trimmed by the rounded outline (vertical edges R1)
+            intersection()
             {
-                // Bloc de base / Base block
-                translate([-88, -73, 0])
-                    cube([115, 105, 30]);
+                union()
+                {
+                    // Bloc de base / Base block
+                    translate([-88, -73, 0])
+                        cube([115, 105, 30]);
 
-                // Languette sur la face de jonction // Tongue on the joining face
-                // Face y = 32
-                translate([-88, 32 - largeur_languette, 30 - e])
-                    cube([115, largeur_languette, hauteur_languette]);
-                // Face x = 27
-                translate([27 - largeur_languette, -12.46, 30 - e])
-                    cube([largeur_languette, 44.46, hauteur_languette]);
-                // Face x = -88
-                translate([-88, -20.983, 30 - e])
-                    cube([largeur_languette, 52.9, hauteur_languette]);
-                // Pan parallèle à l'axe objectif / Face parallel to objective axis
-                rotate([0, 0, 40]) translate([-80.9, -26.9, 30 - e])
-                    cube([93.57, largeur_languette, hauteur_languette]);
-                // Pan perpendiculaire à l'axe objectif / Face perpendicular to objective axis
-                rotate([0, 0, 130]) translate([-26.9, 79.4, 30 - e])
-                    cube([67.391, largeur_languette, hauteur_languette]);
+                    // Languette sur la face de jonction // Tongue on the joining face
+                    // Face y = 32
+                    translate([-88, 32 - largeur_languette, 30 - e])
+                        cube([115, largeur_languette, hauteur_languette]);
+                    // Face x = 27
+                    translate([27 - largeur_languette, -12.46, 30 - e])
+                        cube([largeur_languette, 44.46, hauteur_languette]);
+                    // Face x = -88
+                    translate([-88, -20.983, 30 - e])
+                        cube([largeur_languette, 52.9, hauteur_languette]);
+                    // Pan parallèle à l'axe objectif / Face parallel to objective axis
+                    rotate([0, 0, 40]) translate([-80.9, -26.9, 30 - e])
+                        cube([93.57, largeur_languette, hauteur_languette]);
+                    // Pan perpendiculaire à l'axe objectif / Face perpendicular to objective axis
+                    rotate([0, 0, 130]) translate([-26.9, 79.4, 30 - e])
+                        cube([67.391, largeur_languette, hauteur_languette]);
+                }
+
+                // Contour extérieur à angles arrondis, de la base au sommet des languettes
+                // Rounded-corner outline, from the base to the top of the tongues
+                translate([0, 0, -e])
+                    linear_extrude(height = 30 + hauteur_languette + 2 * e)
+                        contour_exterieur_arrondi();
             }
 
             // Pan parallèle à l'axe objectif
             // Face parallel to the objective axis
+            // (60 + e : la coupe mord de 0.01 mm sur la languette pour éviter les faces confondues)
+            // (60 + e: the cut bites 0.01 mm into the tongue to avoid coincident faces)
             rotate([0, 0, 40]) translate([-80.9, -86.9, -e])
-                cube([120, 60, 35]);
+                cube([120, 60 + e, 35]);
 
             // Pan perpendiculaire à l'axe objectif
             // Face perpendicular to the objective axis
             rotate([0, 0, 40]) translate([-120.9, -30, -e])
-                cube([40, 80, 35]);
+                cube([40 + e, 80, 35]);
            
             // Cavités intérieures / Inner cavities, 
             rotate([0, 0, 40]) translate([-50, -16.9, 9])
@@ -227,9 +262,10 @@ module capot_inferieur()
     }
 }
 
+
 // =====================================================================
 // CAPOT SUPÉRIEUR / TOP COVER
-// Pièce / Part : 2-1-capot-superieur
+// Pièce / Part : 2-2-capot-superieur
 // =====================================================================
 
 module capot_superieur()
@@ -245,10 +281,18 @@ module capot_superieur()
         difference()
         {
             // ---------------------------------------------------------
-            // Bloc de base / Base block
+            // Bloc de base recoupé par le contour arrondi (arêtes verticales R1)
+            // Base block trimmed by the rounded outline (vertical edges R1)
             // ---------------------------------------------------------
-            translate([-88, -73, 0])
-                cube([115, 105, 30]);
+            intersection()
+            {
+                translate([-88, -73, 0])
+                    cube([115, 105, 30]);
+
+                translate([0, 0, -e])
+                    linear_extrude(height = 30 + 2 * e)
+                        contour_exterieur_arrondi();
+            }
 
             // ---------------------------------------------------------
             // Contour : pans coupés
@@ -348,6 +392,7 @@ module capot_superieur()
     }
 }
 
+
 // =====================================================================
 // TUBE COLLIMATEUR / COLLIMATOR TUBE
 // Pièce / Part : 3-1-tube-collimateur
@@ -363,7 +408,7 @@ module tube_collimateur()
     // (mise au point du collimateur)
     // Lens seat depth, measured from the top of the tube. CRITICAL
     // DIMENSION: it sets the slit-to-lens distance (collimator focus)
-    profondeur_logement_lentille = 12.55;    
+    profondeur_logement_lentille = 12.60;    
 
     // Épaisseur de la lentille prise pour le dessin
     // Lens thickness used for the design
@@ -702,7 +747,6 @@ module porte_reseau_127()
 }
 
 
-
 // =====================================================================
 // PORTE-RÉSEAU 25 / GRATING HOLDER 25
 // Taille / Size : 25.0 x 25.0 x 6 mm
@@ -907,11 +951,15 @@ module interface_reseau()
 
 // =====================================================================
 // SUPPORT FENTE / SLIT SUPPORT
-// Pièce / Part : 11-1-support-fente
+// Pièce / Part : 11-2-support-fente
 // =====================================================================
 
 module support_fente()
 {
+    // Petit débord pour des soustractions propres
+    // Small overlap for clean subtractions
+    epsilon = 0.01;
+
     // Diamètre de la rondelle, inférieur au diamètre du tube collimateur (40 mm)
     // Washer diameter smaller than the diameter of the collimator tube (40 mm)
     diametre_rondelle = 39.7;
@@ -920,43 +968,89 @@ module support_fente()
     // Height of the slit plane above the base (fundamental dimension)
     hauteur_plan_fente = 8.98;
 
-    // Inclinaison de la plaque de fente autour de l'axe X (degrés)
-    // Tilt of the slit plate about the X axis (degrees)
+    // Inclinaison du plan de la fente autour de l'axe X (degrés)
+    // Tilt of the slit plane about the X axis (degrees)
     inclinaison = -15;
 
-    // Décalage en X de l'empreinte de la plaque de fente par rapport à
+    // Décalage en X de la glissière (et de ses épaulements) par rapport à
     // la position centrale (X = 0)
-    // X shift of the slit plate imprint relative to the central position (X = 0)
+    // X shift of the slide (and of its shoulders) relative to the central position (X = 0)
     // Par exemple, pour mieux centrer la zone photométrique : decalage_x = 1.0;
     // For example, to better centre the photometric zone: decalage_x = 1.0;
     decalage_x = 0.0;
+
+    // ----- Glissière de la plaque / Plate slide -----
+    // Côté de la plaque (carrée) et jeu de guidage
+    // Plate side (square) and guiding clearance
+    cote_plaque = 16;
+    jeu = 0.2;
+    largeur_guidage = cote_plaque + jeu;        // entre épaulements / between shoulders
+
+    // Épaulements : épaisseur et hauteur au-dessus du plan de fente
+    // (la plaque, épaisse de 2 mm, dépasse de 0.4 mm pour être plaquée par la bride)
+    // Shoulders: thickness and height above the slit plane
+    // (the 2 mm thick plate protrudes 0.4 mm so the clamp presses on it)
+    epaisseur_epaulement = 1.8;
+    hauteur_epaulement = 1.6;
+
+    // Position de la butée en Y (plan incliné) et longueur de la glissière
+    // Stop position in Y (tilted plane) and slide length
+    butee_y = -4;
+    longueur_glissiere = 28;
+
+    // Longueur des épaulements à partir de la butée : ils guident la plaque
+    // sur cette longueur seulement, sans empiéter sur les trous d'inserts
+    // (Y = 8, Ø4.2, donc pas au-delà de Y = 5.95)
+    // Shoulder length from the stop: they guide the plate over this length
+    // only, without encroaching on the insert holes
+    // (Y = 8, Ø4.2, hence not beyond Y = 5.95)
+    longueur_epaulements = 10;
+    fin_epaulements_y = butee_y + longueur_epaulements;   // Y = 4
+
+    // Demi-largeur extérieure, épaulements compris (9.9 mm)
+    // Outer half-width, shoulders included (9.9 mm)
+    demi_largeur_ext = largeur_guidage / 2 + epaisseur_epaulement;
 
     translate([0, 0, hauteur_plan_fente])
     difference()
     {
         translate([0, 0, -hauteur_plan_fente])
             cylinder(h = hauteur_plan_fente + 2.5, d = diametre_rondelle);
-        
-        // Logement de la plaque de fente 16.2 x 28 (0.2 mm de jeu)
-        // Slit plate pocket 16.2 x 28 (0.2 mm clearance)
-        rotate([inclinaison, 0, 0])
-            translate([-8.1 + decalage_x, -4, 0]) cube([16.2, 28, 8]);
 
-        // Flanc droit / Right flank
+        // -------------------------------------------------------------
+        // Glissière de la plaque, dans le repère du plan incliné
+        // Plate slide, in the tilted plane frame
+        // -------------------------------------------------------------
         rotate([inclinaison, 0, 0])
-            translate([9.9 + decalage_x/2, -30, 0]) cube([30, 60, 40]);
+        {
+            // Rainure de guidage 16.2 mm, de la butée vers l'arrière :
+            // la plaque s'y glisse par le côté arrière (Y croissant)
+            // 16.2 mm guiding channel, from the stop towards the rear:
+            // the plate is slid in from the rear side (increasing Y)
+            translate([-largeur_guidage / 2 + decalage_x, butee_y, 0])
+                cube([largeur_guidage, longueur_glissiere, 8]);
 
-        // Flanc gauche / Left flank
-        rotate([inclinaison, 0, 0])
-            translate([-37.5 + decalage_x, -30, 0]) cube([30, 60, 40]);
+            // Flanc droit : tout est dégagé au-dessus du plan, à droite de l'épaulement droit
+            // Right flank: everything above the plane is cleared, right of the right shoulder
+            translate([demi_largeur_ext + decalage_x, -30, 0])
+                cube([30, 60, 40]);
 
-        // Dégagement arrière droit / Rear right clearance
-        rotate([inclinaison, 0, 0])
-            translate([7.2 + decalage_x, 5.95, 0]) cube([30, 40, 40]);
+            // Flanc gauche : idem, à gauche de l'épaulement gauche
+            // Left flank: same, left of the left shoulder
+            translate([-demi_largeur_ext + decalage_x - 30, -30, 0])
+                cube([30, 60, 40]);
+
+            // Dégagement arrière : plus d'épaulement au-delà de la fin des guides
+            // Rear clearance: no shoulder beyond the end of the guides
+            translate([-30, fin_epaulements_y, 0])
+                cube([60, 60, 40]);
+        }
 
         // Coupe supérieure : plan incliné 1.6 mm au-dessus du plan de fente
+        // (arase les épaulements à leur hauteur)
         // Top cut: tilted plane 1.6 mm above the slit plane
-        translate([0, 0, 1.6])
+        // (trims the shoulders to their height)
+        translate([0, 0, hauteur_epaulement])
             rotate([inclinaison, 0, 0])
                 translate([-30, -30, 0]) cube([60, 60, 40]);
 
@@ -967,16 +1061,19 @@ module support_fente()
                 translate([x, 8, -15]) cylinder(h = 36, d = 4.2);
 
         // Flancs latéraux plats / Flat side flanks
-        translate([9.9 + decalage_x/2, -30, -1.3]) cube([30, 60, 40]);
-        translate([-38.5 + decalage_x, -30, -1.3]) cube([30, 60, 40]);
+        translate([demi_largeur_ext + decalage_x, -30, -1.3]) cube([30, 60, 40]);
+        translate([-demi_largeur_ext + decalage_x - 30, -30, -1.3]) cube([30, 60, 40]);
 
-        // Plan avant de la fente / Front plane of the slit
+        // Plan avant de la fente (derrière la butée) / Front plane of the slit (behind the stop)
         translate([-30, -45.5, -1.3]) cube([60, 40, 5]);
 
-        // Cassage de coin 6 x 4 / 6 x 4 corner relief
+        // Cassages de coin 6 x 4, à droite et à gauche : la plaque appuyée
+        // sur la butée ne risque pas de bavure dans les coins à 90°
+        // 6 x 4 corner reliefs, right and left: the plate resting on the
+        // stop cannot catch a burr in the 90° corners
         translate([6.8 + decalage_x, -6, -1.3]) cube([6, 4, 10]);
+        translate([-12.8 + decalage_x, -6, -1.3]) cube([6, 4, 10]);
 
-       
         // Fenêtre de fente traversante 5.5 x 3.8 mm, centrée sur l'axe
         // Through slit window 5.5 x 3.8 mm, centred on the axis
         translate([-5.5/2, -3.8/2, -25]) cube([5.5, 3.8, 30]);
@@ -1019,6 +1116,172 @@ module support_fente()
                 translate([17, 0, -3.8 - epsilon]) cylinder(h = 20, d = 5.2);
     }
 }
+
+// =====================================================================
+// PLAQUE FENTE 4 POSITIONS / 4-POSITION SLIT PLATE
+// Pièce / Part : 11-2-plaque-fente (Shelyak OP0196B)
+// =====================================================================
+// Lame de 16 x 16 mm, épaisseur 2 mm, dont une face est
+// chromée. Quatre fentes (14, 20, 26 et 32 µm) sont ménagées dans le
+// chrome, chacune repérée par son numéro dans un coin. On change de
+// fente en tournant la lame de 90°.
+//
+// JGS1 glass plate 16 x 16 mm, 2 mm thick, with one chromium-coated
+// face. Four slits (14, 20, 26 and 32 µm) are masked in the coating,
+// each one tagged with its number in a corner. The slit is changed by
+// rotating the plate by 90°.
+//
+// Dessin allégé : les largeurs de fente ne sont PAS à l'échelle (traits
+// élargis pour être visibles) et le motif traverse la lame de part en part.
+// Lightened drawing: slit widths are NOT to scale (lines widened to be
+// visible) and the pattern goes right through the plate.
+//
+// Le chrome est posé contre le PETG, les chiffres se lisent à travers le
+// verre depuis le dessus.
+// The chromium face rests on the PETG, the digits read through the glass
+// from above.
+//
+// Utilisation / Use :
+//   déjà inclinée et positionnée sur le support
+//   already tilted and positioned on the support
+// =====================================================================
+
+fente_en_service = 20;      // 14, 20, 26 ou / or 32 : fente placée sur la fenêtre / slit placed over the window
+
+// Doivent correspondre à 11-1-support-fente.scad
+// Must match 11-1-support-fente.scad
+hauteur_plan_fente = 8.98;
+inclinaison = -15;
+butee_y = -4;
+decalage_x = 0.0;
+
+// Rouge soutenu de la plaque / Deep red of the plate
+rouge_plaque = [0.85, 0, 0];
+
+// ----- Réglages du motif / Pattern settings -----
+largeur_fente = 0.08;       // largeur dessinée, identique pour les 4 fentes (20 µm x 4) / drawn width, same for the 4 slits (20 µm x 4)
+longueur_repere = 0.5;      // longueur de l'élargissement en bout de fente / length of the widened end of the slit
+facteur_repere = 10;        // élargissement du repère : 10 x la largeur de fente / tab widening: 10 x the slit width
+diametre_trou = 0.1;        // trou central (réel : Ø0.025) / central hole (real: Ø0.025)
+profondeur_motif = 2;       // motif traversant sur toute l'épaisseur de 2 mm / pattern cut through the full 2 mm thickness
+
+e = 0.01;
+
+// ---------------------------------------------------------------------
+// Rectangle dans le repère du dessin (u, v), vu côté chrome
+// Rectangle in the drawing frame (u, v), seen from the chromium side
+// ---------------------------------------------------------------------
+module rect(u0, u1, v0, v1)
+{
+    translate([u0, v0]) square([u1 - u0, v1 - v0]);
+}
+
+// Numéro de coin, en miroir comme sur le dessin (lisible à travers le verre),
+// tourné de "angle" autour de son centre. L'angle est donné dans le repère du
+// dessin (vu côté chrome) : vu du dessus à travers le verre, le sens est inversé.
+// Corner number, mirrored as on the drawing (readable through the glass),
+// rotated by "angle" about its centre. The angle is given in the drawing frame
+// (seen from the chromium side): seen from above through the glass, the
+// direction is reversed.
+module numero(texte, u, v, angle = 0)
+{
+    translate([u, v])
+        rotate(angle)
+            mirror([1, 0])
+                scale([0.7, 1])
+                    text(texte, size = 1.05, font = "Liberation Sans:style=Bold",
+                         halign = "center", valign = "center");
+}
+
+// Une fente : trait de 4 mm à 4 mm du centre (position haute), élargi à une
+// extrémité sur 0.5 mm (repère de 10 x la largeur de fente)
+// One slit: 4 mm line at 4 mm from the centre (top position), widened at one
+// end over 0.5 mm (tab 10 x the slit width)
+module fente_motif()
+{
+    w = largeur_fente;
+    W = facteur_repere * largeur_fente;
+
+    rect(-2.25 + longueur_repere, 2.25, 4 - w / 2, 4 + w / 2);   // trait / line
+    rect(-2.25, -2.25 + longueur_repere, 4 - W / 2, 4 + W / 2);  // élargissement / widened end
+}
+
+// ---------------------------------------------------------------------
+// Motif chromé dans le repère du dessin : 4 fentes, trou, numéros
+// Chromium pattern in the drawing frame: 4 slits, hole, numbers
+// ---------------------------------------------------------------------
+module motif()
+{
+    // La même fente dupliquée 4 fois, tournée de 90° à chaque fois
+    // The same slit duplicated 4 times, rotated by 90° each time
+    for (i = [0 : 3])
+        rotate(-90 * i)
+            fente_motif();
+
+    // Trou central Ø25 µm (élargi) / central hole Ø25 µm (widened)
+    circle(d = diametre_trou, $fn = 24);
+
+    // Numéros de coin, vus du dessus à travers le verre :
+    // 14 tourné de 90° dans le sens horaire, 20 inchangé,
+    // 26 tourné de 90° dans le sens antihoraire, 32 tourné de 180°
+    // Corner numbers, seen from above through the glass:
+    // 14 rotated 90° clockwise, 20 unchanged,
+    // 26 rotated 90° counter-clockwise, 32 rotated 180°
+    numero("14", -7.1,  7.1,  90);
+    numero("20",  7.1,  7.1,   0);
+    numero("32", -7.1, -7.1, 180);
+    numero("26",  7.1, -7.1, -90);
+}
+
+// Rotation de la lame qui amène la fente voulue en bas (côté butée),
+// là où elle se place sur la fenêtre du support
+// Plate rotation that brings the wanted slit to the bottom (stop side),
+// where it sits over the support window
+function angle_fente(f) =
+    f == 32 ? 0 :
+    f == 20 ? 180 :
+    f == 26 ? 90 : -90;
+
+// ---------------------------------------------------------------------
+// Lame à plat, centrée en X et Y, face chromée en Z = 0, face
+// antireflet en Z = 2 (usage interne)
+// Plate lying flat, centred in X and Y, chromium face at Z = 0,
+// anti-reflective face at Z = 2 (internal use)
+// ---------------------------------------------------------------------
+module plaque_a_plat(fente = 32)
+{
+    rotate([0, 0, angle_fente(fente)])
+    difference()
+    {
+        translate([-8, -8, 0]) cube([16, 16, 2]);
+
+        mirror([1, 0, 0])
+            translate([0, 0, -e])
+                linear_extrude(height = profondeur_motif + 2 * e)
+                    motif();
+    }
+}
+
+// ---------------------------------------------------------------------
+// PLAQUE FENTE : dessine uniquement la lame, en rouge soutenu, déjà
+// inclinée de 15° et translatée pour reposer dans le support de fente :
+// face chromée contre le PETG (plan incliné), poussée contre la butée en Y,
+// entre les deux épaulements. À appeler après (ou avant) support_fente().
+//
+// SLIT PLATE: draws only the plate, in deep red, already tilted by 15° and
+// translated to sit in the slit support: chromium face against the PETG
+// (tilted plane), pushed against the stop in Y, between the two shoulders.
+// Call it after (or before) support_fente().
+// ---------------------------------------------------------------------
+module plaque_fente(fente = fente_en_service)
+{
+    translate([0, 0, hauteur_plan_fente])
+        rotate([inclinaison, 0, 0])
+            translate([decalage_x, butee_y + 8, 0])
+                color(rouge_plaque)
+                    plaque_a_plat(fente);
+}
+
 
 // =====================================================================
 // BRIDE DE FENTE / SLIT CLAMP
@@ -1079,9 +1342,11 @@ module trappe_focus()
 // porte_reseau_250();
 // bride_reseau();
 // interface_reseau();
-// rotate([0,0,-90]) support_fente();
+// support_fente();
+// plaque_fente();
 // bride_fente();
 // trappe_focus();
+
 
 
 
